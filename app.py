@@ -41,7 +41,7 @@ if uploaded_file is not None:
         with st.spinner("Gemini가 커밋 메시지를 생성 중입니다..."):
             try:
                 # ✅ 최신 모델 사용
-                model = genai.GenerativeModel('gemini-1.0-pro')
+                model = genai.GenerativeModel('gemini-1.5-pro')
                 response = model.generate_content(prompt)
 
                 st.success("✅ 커밋 메시지 생성 완료!")
