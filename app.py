@@ -40,9 +40,9 @@ if uploaded_file is not None:
     if st.button("💬 커밋 메시지 생성하기"):
         with st.spinner("Gemini가 커밋 메시지를 생성 중입니다..."):
             try:
-                # ✅ chat 방식으로 생성
-                chat = genai.ChatModel(model_name="models/chat-bison-001").start_chat()
-                response = chat.send_message(prompt)
+                # ✅ 최신 모델 사용
+                model = genai.GenerativeModel('gemini-1.0-pro')
+                response = model.generate_content(prompt)
 
                 st.success("✅ 커밋 메시지 생성 완료!")
                 st.subheader("📜 자동 생성된 커밋 메시지")
