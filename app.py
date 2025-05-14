@@ -1,17 +1,17 @@
 import streamlit as st
 import google.generativeai as genai
-import os
 
-# ✅ Streamlit Cloud에서는 secrets.toml을 사용
+# ✅ Streamlit secrets에서 API 키 가져오기
 GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
 
-# Gemini 설정
+# ✅ Gemini 설정
 genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel("gemini-pro")
 
+# ✅ Streamlit UI
 st.set_page_config(page_title="Git diff 기반 커밋 메시지 생성기", layout="centered")
 st.title("💡 Git diff 기반 자동 커밋 메시지 생성기 (Gemini API)")
 
+# ✅ 파일 업로드
 uploaded_file = st.file_uploader("🔄 `.diff` 파일을 업로드하세요", type=["diff", "txt"])
 
 if uploaded_file is not None:
@@ -20,6 +20,7 @@ if uploaded_file is not None:
     st.subheader("📋 업로드된 diff 내용")
     st.code(diff_content, language="diff")
 
+    # ✅ 프롬프트 생성
     prompt = f"""
 아래는 Git 커밋 메시지 규칙입니다:
 
@@ -39,10 +40,14 @@ if uploaded_file is not None:
     if st.button("💬 커밋 메시지 생성하기"):
         with st.spinner("Gemini가 커밋 메시지를 생성 중입니다..."):
             try:
-                response = model.generate_content(prompt)
+                # ✅ chat 방식으로 생성
+                chat = genai.ChatModel(model_name="models/chat-bison-001").start_chat()
+                response = chat.send_message(prompt)
+
                 st.success("✅ 커밋 메시지 생성 완료!")
                 st.subheader("📜 자동 생성된 커밋 메시지")
                 st.code(response.text.strip(), language="markdown")
+
             except Exception as e:
                 st.error(f"❌ 오류 발생: {e}")
 else:
